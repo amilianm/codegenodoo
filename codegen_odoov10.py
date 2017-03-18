@@ -1,34 +1,26 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    ODOO, Solución ERP de código abierto
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    Este programa es software libre: se puede redistribuir y / o modificar
+#    bajo los términos de la GNU Affero General Public License
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Debería haber recibido una copia de la Licencia Pública General GNU Affero
+#    Junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 import sys, dia, os
 import zipfile
 
 #
-# This code is inspired by codegen.py
+# Este código está inspirado en codegen.py
 #
 class Klass :
     def __init__ (self, name) :
         self.name = name
         self.attributes = []
-        # a list, as java/c++ support multiple methods with the same name
         self.stereotype = ""
         self.operations = []
         self.comment = ""
@@ -49,18 +41,17 @@ class Klass :
         self.inheritance_type = inheritance_type
 
 class ObjRenderer :
-    "Implements the Object Renderer Interface and transforms diagram into its internal representation"
+    "Implementa la interfaz de renderizado de objetos y transforma el diagrama en su representación interna"
     def __init__ (self) :
-        # an empty dictionary of classes
+        # Un diccionario vacío de clases
         self.klasses = {}
-        self.klass_names = []   # store class names to maintain order
+        self.klass_names = []
         self.arrows = []
         self.filename = ""
         
     def begin_render (self, data, filename) :
         self.filename = filename
         for layer in data.layers :
-            # for the moment ignore layer info. But we could use this to spread accross different files
             for o in layer.objects :
                 if o.type.name == "UML - Class" :
 
@@ -72,27 +63,18 @@ class ObjRenderer :
                     if o.properties["template"].value:
                         k.SetInheritance_type("template")
                     for op in o.properties["operations"].value :
-                        # op : a tuple with fixed placing, see: objects/UML/umloperations.c:umloperation_props
-                        # (name, type, comment, stereotype, visibility, inheritance_type, class_scope, params)
                         params = []
                         for par in op[8] :
-                            # par : again fixed placement, see objects/UML/umlparameter.c:umlparameter_props
                             params.append((par[0], par[1]))
                         k.AddOperation (op[0], op[1], op[4], params, op[5], op[2], op[7])
-                    #print o.properties["attributes"].value
                     for attr in o.properties["attributes"].value :
-                        # see objects/UML/umlattributes.c:umlattribute_props
-                        #print "    ", attr[0], attr[1], attr[4]
                         k.AddAttribute(attr[0], attr[1], attr[4], attr[2], attr[3])
                     self.klasses[o.properties["name"].value] = k
                     self.klass_names += [o.properties["name"].value]
-                    #Connections
+                    #Conexiones
                 elif o.type.name == "UML - Association" :
-                    # should already have got attributes relation by names
+                    # Debería haber obtenido ya atributos relación por nombres
                     pass
-                # other UML objects which may be interesting
-                # UML - Note, UML - LargePackage, UML - SmallPackage, UML - Dependency, ...
-        
         edges = {}
         for layer in data.layers :
             for o in layer.objects :
@@ -116,12 +98,11 @@ class ObjRenderer :
                         else: self.klasses[chi_name].AddTemplate(par_name)
                     
     def end_render(self) :
-        # without this we would accumulate info from every pass
+        # Sin esto nos acumularíamos información de cada pase
         self.attributes = []
         self.operations = {}
 
-
-class OpenERPRenderer(ObjRenderer) : 
+class ODOORenderer(ObjRenderer) : 
     def __init__(self) :
         ObjRenderer.__init__(self)
 
@@ -135,24 +116,16 @@ class OpenERPRenderer(ObjRenderer) :
         terp = """# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    ODOO, Solución ERP de código abierto
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    Este programa es software libre: se puede redistribuir y / o modificar
+#    bajo los términos de la GNU Affero General Public License
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Debería haber recibido una copia de la Licencia Pública General GNU Affero
+#    Junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# Generated by the Odoo V10 plugin for Dia !
+# Generado por el plugin Odoo V10 para Dia!
 {
     'name': '%(module)s',
     'version': '0.1',
@@ -173,28 +146,50 @@ class OpenERPRenderer(ObjRenderer) :
 }""" % self.data_get()
         return terp
 
+    def html_get(self):
+        return """
+    <section class="oe_container">
+        <div class="oe_row oe_spaced">
+            <div class="oe_span12">
+                <h2 class="oe_slogan">Nombre del Módulo</h2>
+                <h3 class="oe_slogan">Descripción</h3>
+            </div>
+            <div class="oe_span12">
+                <p>Descripción del Modelo</p>
+            </div>
+        </div>
+    </section>
+    <section class="oe_container oe_dark"></section>
+    """
+
+    def less_get(self):
+        return """
+    /*------------------------------
+    * Coloque aqui los estilos
+    *-------------------------------
+    */"""
+
+    def java_get(self):
+        return """
+    /*------------------------------
+    * Coloque aqui las funciones
+    *-------------------------------
+    */"""
+
     def init_get(self):
         return """# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    ODOO, Solución ERP de código abierto
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    Este programa es software libre: se puede redistribuir y / o modificar
+#    bajo los términos de la GNU Affero General Public License
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Debería haber recibido una copia de la Licencia Pública General GNU Affero
+#    Junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# Generated by the Odoo plugin for Dia !\n#\n\nimport models"""
+# Generado por el plugin Odoo V10 para Dia!\n#\n\nimport models"""
     
     def security_get(self):
         header = """"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"\n"""
@@ -204,7 +199,6 @@ class OpenERPRenderer(ObjRenderer) :
             cname = clas.replace('.', '_')
             header += rows % (cname, clas, cname) + '\n'
         return header
-
 
     def get_label(self, attrs):
         label = None
@@ -259,6 +253,7 @@ class OpenERPRenderer(ObjRenderer) :
         if 'date' in cols:
             data['mode']='tree,form,calendar'
         result = """
+    <!-- VISTA FORM: %(menu)s -->
     <record model="ir.ui.view" id="view_%(name_id)s_form">
         <field name="name">%(name)s.form</field>
         <field name="model">%(name)s</field>
@@ -271,6 +266,9 @@ class OpenERPRenderer(ObjRenderer) :
             </form>
         </field>
     </record>
+    <!-- FIN VISTA FORM: %(menu)s -->
+
+    <!-- VISTA TREE: %(menu)s -->
     <record model="ir.ui.view" id="view_%(name_id)s_tree">
         <field name="name">%(name)s.tree</field>
         <field name="model">%(name)s</field>
@@ -281,78 +279,72 @@ class OpenERPRenderer(ObjRenderer) :
             </tree>
         </field>
     </record>
+    <!-- FIN VISTA TREE: %(menu)s -->
+
+    <!-- MODELO: %(name_en)s -->
     <record model="ir.actions.act_window" id="action_%(name_id)s">
         <field name="name">%(name_en)s</field>
         <field name="res_model">%(name)s</field>
         <field name="view_type">form</field>
         <field name="view_mode">%(mode)s</field>
     </record>
-    <menuitem name="%(menu)s" id="menu_%(name_id)s" action="action_%(name_id)s"/>
+    <!-- FIN MODELO: %(name_en)s -->
 
+    <!-- MENÚ SECUNDARIO: %(menu)s -->
+    <menuitem name="%(menu)s" id="menu_%(name_id)s" action="action_%(name_id)s" parent="men_sec"/>
         """ % data
         return result
 
     def view_get(self):
         result = """<?xml version="1.0"?>
+
 <odoo>
 <data>
 """
         for sk in self.klass_names:
             result += self.view_class_get(sk, self.klasses[sk])
         result += """
+
+    <!-- MENÚ PRINCIPAL -->
+    <menuitem name="MENU" id="men_pri"/>
+
 </data>
 </odoo>"""
         return result
-
 
     def init_model_get(self):
         return """# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    ODOO, Solución ERP de código abierto
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    Este programa es software libre: se puede redistribuir y / o modificar
+#    bajo los términos de la GNU Affero General Public License
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Debería haber recibido una copia de la Licencia Pública General GNU Affero
+#    Junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# Generated by the Odoo plugin for Dia !\n#\n\nimport %(module)s""" % self.data_get()
+# Generado por el plugin Odoo V10 para Dia!\n#\n\nimport %(module)s""" % self.data_get()
 
     def code_get(self):
         result = """# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    ODOO, Solución ERP de código abierto
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
+#    Este programa es software libre: se puede redistribuir y / o modificar
+#    bajo los términos de la GNU Affero General Public License
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    Debería haber recibido una copia de la Licencia Pública General GNU Affero
+#    Junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# Generated by the Odoo V10 plugin for Dia !
-from odoo import api, fields, models
+# Generado por el plugin Odoo V10 para Dia!
 
+from odoo import api, fields, models
 """     
+
         for sk in self.klass_names:
             cname = sk.replace('.','_')
             result += "class %s(models.Model):\n" % (cname,)
@@ -405,7 +397,10 @@ from odoo import api, fields, models
                 'models/__init__.py':self.init_model_get(),
                 'models/'+module+'.py': self.code_get(),
                 'views/'+module+'_view.xml': self.view_get(),
-                'security/ir.model.access.csv': self.security_get()
+                'security/ir.model.access.csv': self.security_get(),
+                'static/description/index.html': self.html_get(),
+                'static/src/less/'+module+'.less': self.less_get(),
+                'static/src/js/'+module+'.js': self.java_get()
         }
         for name,datastr in filewrite.items():
             info = zipfile.ZipInfo(module+'/'+name)
@@ -415,10 +410,5 @@ from odoo import api, fields, models
         zip.close()
         ObjRenderer.end_render(self)
 
-
-# dia-python keeps a reference to the renderer class and uses it on demand
-dia.register_export ("PyDia Generador de Código (Odoo V10)", "zip", OpenERPRenderer())
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
-
+# dia-python mantiene una referencia a la clase renderer y la usa a demanda
+dia.register_export ("CODEGEN ODOO V10)", "zip", ODOORenderer())
