@@ -13,7 +13,7 @@
 <strong>Como Usar ?</strong>
 ---------------------
 
-* Descargue el ejemplo que se adjunta "<a href="http://www.minpi.gob.ve/images/icons/componente/mapvenezuela/com_mapa-1.0.0.zip" target="_blank">ejemplo.dia</a>" para ver como están construidas las Clases
+* Descargue el ejemplo que se adjunta "<a href="https://github.com/amilianm/codegenodoo/blob/master/ejemplo.dia" target="_blank">ejemplo.dia</a>" para ver como están construidas las Clases
 
 * Seleccione en el Menú Superior "Archivo > Exportar"
 
