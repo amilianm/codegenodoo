@@ -9,6 +9,7 @@ Instale Dia
 apt-get install dia
 
 Descarga el archivo codegen_odoov10.py
+
 Copie el archivo en la carpeta /usr/share/dia/python/
 
 Como Usar ?
