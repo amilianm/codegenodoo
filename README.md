@@ -23,9 +23,9 @@
 
 * Descomprima el Archivo y copielo dentro de la carpeta /usr/lib/python2.7/dist-packages/odoo/addons/
 
-* Dirijase a su Odoo en el menú Configuración haga click en Activar Modo Desarrollador
+* Diríjase a su Odoo en el menú Configuración haga click en Activar Modo Desarrollador
 
-* Precione Actualizar lista de Aplicaciones en el Tablero de Aplicaciones
+* Presione Actualizar lista de Aplicaciones en el Tablero de Aplicaciones
 
 * Filtre por el nombre del Módulo que creo y precione instalar Aplicación
 
