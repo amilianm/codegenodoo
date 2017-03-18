@@ -1,7 +1,6 @@
 # CodeGen Odoo V 10
 <strong>Codegen Dia para Odoo V10</strong>
 
----------------------
 <strong>Configuración</strong>
 ---------------------
 
@@ -11,7 +10,6 @@ Descarga el archivo codegen_odoov10.py
 
 Copie el archivo en la carpeta /usr/share/dia/python/
 
----------------------
 <strong>Como Usar ?</strong>
 ---------------------
 
