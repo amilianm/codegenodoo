@@ -28,6 +28,6 @@ Dirijase a su Odoo en el menú Configuración haga click en Activar Modo Desarro
 
 Precione Actualizar lista de Aplicaciones en el Tablero de Aplicaciones
 
-Filtre por el nombre del Múdulo que creo y precione instalar Aplicación
+Filtre por el nombre del Módulo que creo y precione instalar Aplicación
 
 Enjoy
