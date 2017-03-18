@@ -13,7 +13,7 @@
 <strong>Como Usar ?</strong>
 ---------------------
 
-* Abra el ejemplo que se adjunta para ver como están construidas las Clases
+* Descargue el ejemplo que se adjunta "ejemplo.dia" para ver como están construidas las Clases
 
 * Seleccione en el Menú Superior "Archivo > Exportar"
 
