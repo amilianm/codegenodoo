@@ -4,11 +4,11 @@
 <strong>Configuración</strong>
 ---------------------
 
-Instale Dia: apt-get install dia
+1- Instale Dia: apt-get install dia
 
-Descarga el archivo: codegen_odoov10.py
+2- Descarga el archivo: codegen_odoov10.py
 
-Copie el archivo en la carpeta /usr/share/dia/python/
+3- Copie el archivo en la carpeta /usr/share/dia/python/
 
 <strong>Como Usar ?</strong>
 ---------------------
