@@ -27,6 +27,6 @@
 
 * Presione Actualizar lista de Aplicaciones en el Tablero de Aplicaciones
 
-* Filtre por el nombre del Módulo que creo y precione instalar Aplicación
+* Filtre por el nombre del Módulo que creo y presione en Instalar Aplicación
 
 Enjoy
